@@ -1,0 +1,163 @@
+select * from casestudy_bikeride.dbo.total_year_cycle_tripdata
+
+--Count looking at the total number of rows
+
+select count(member_casual) as total_riders
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+
+--looking at the Distinct values of members and casuals
+
+select count(distinct member_casual) as type_riders
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+
+--looking at the type of members
+
+select member_casual
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+group by member_casual
+
+----looking at the type of bikes
+
+select rideable_type
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+group by rideable_type
+
+--Convert time
+
+select [started_at],[ended_at], convert (time, started_at) as Start_time, CONVERT(time, ended_at) as end_time
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+
+--view of only casual riders list
+
+select *
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+where member_casual = 'casual';
+
+--Create a new table as casual riders
+
+select member_casual, rideable_type, ride_length, day_of_week into casual_riders
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+where member_casual = 'casual';
+
+-- view of created table
+
+select *
+from casual_riders
+
+--casual riders ride by type of bike
+
+select rideable_type,ride_length
+from casual_riders
+order by rideable_type
+
+--Count looking at the total number of rows
+
+select count(member_casual) as total_riders
+from casual_riders
+
+--view of only member riders list
+
+select *
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+where member_casual = 'member';
+
+--Create a new table as member riders
+
+select member_casual, rideable_type, ride_length, day_of_week into member_riders
+from casestudy_bikeride.dbo.total_year_cycle_tripdata
+where member_casual = 'member';
+
+--view of created table
+
+select *
+from member_riders
+
+--member riders ride by type of bike
+
+select rideable_type,ride_length
+from member_riders
+order by rideable_type
+
+--Count looking at the total number of rows
+
+select count(member_casual) as total_riders
+from member_riders
+
+--Distinct values of casual riders
+
+select distinct rideable_type, day_of_week
+from casual_riders
+order by day_of_week
+
+
+
+--Distinct values of member riders
+
+select distinct rideable_type, day_of_week
+from member_riders
+order by day_of_week
+
+--minimum ride length of casual riders
+
+select min(ride_length) as min_ride_length, min(day_of_week) as min_days
+from casual_riders
+
+--maximum ride length of casual riders
+
+select max(ride_length) as max_ride_length, min(ride_length) as min_ride_length, avg(ride_length) as avg_ride_length, day_of_week as days_of_week
+from casual_riders
+group by day_of_week
+order by day_of_week asc
+
+--Average ride length of casual riders
+
+select avg(ride_length) as avg_ride_length,
+from casual_riders
+
+
+
+--minimum ride length of member riders
+
+select min(ride_length) as min_ride_length, min(day_of_week) as min_days
+from member_riders
+
+--maximum ride length of member riders
+
+select max(ride_length) as max_ride_length, max(day_of_week) as max_days
+from member_riders
+
+--Average ride length of member riders
+
+select avg(ride_length) as avg_ride_length, avg(day_of_week) as avg_days
+from member_riders
+
+
+select min(ride_length) as min_ride_length, max(ride_length) as max_ride_length, avg(ride_length) as avg_ride_length, day_of_week as days_of_week
+from member_riders
+group by day_of_week
+order by day_of_week asc
+
+
+--using inner join
+
+select member_riders.member_casual, casual_riders.member_casual, member_riders.rideable_type, 
+casual_riders.rideable_type, member_riders.ride_length, casual_riders.ride_length, 
+member_riders.day_of_week, casual_riders.day_of_week
+from member_riders 
+join casual_riders on member_riders.rideable_type=casual_riders.rideable_type;
+
+--using  left join
+
+select member_riders.member_casual, casual_riders.member_casual, member_riders.rideable_type, 
+casual_riders.rideable_type, member_riders.ride_length, casual_riders.ride_length, 
+member_riders.day_of_week, casual_riders.day_of_week
+from member_riders 
+left join casual_riders on member_riders.rideable_type=casual_riders.rideable_type;
+
+--using  right join
+
+select member_riders.member_casual, casual_riders.member_casual, member_riders.rideable_type, 
+casual_riders.rideable_type, member_riders.ride_length, casual_riders.ride_length, 
+member_riders.day_of_week, casual_riders.day_of_week
+from member_riders 
+right join casual_riders on member_riders.rideable_type=casual_riders.rideable_type;
